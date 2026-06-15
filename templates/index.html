@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>AI Life Delay Optimizer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <div id="notificationBox" class="notification hidden"></div>
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+
+        <div class="sidebar">
+
+            <h2>AI Optimizer</h2>
+            <button id="themeToggle">
+                🌙 Dark Mode
+            </button>
+
+            <p
+                style="
+                    color:#94a3b8;
+                    margin-bottom:30px;
+                    font-size:14px;
+                "
+            >
+                Your Productivity Assistant
+            </p>
+
+            <ul
+                style="
+                    list-style:none;
+                    padding:0;
+                "
+            >
+
+                <li
+                    style="
+                        margin-bottom:15px;
+                    "
+                >
+                    📊 Dashboard
+                </li>
+
+                <li
+                    style="
+                        margin-bottom:15px;
+                    "
+                >
+                    📈 Analytics
+                </li>
+
+                <li
+                    style="
+                        margin-bottom:15px;
+                    "
+                >
+                    🧠 Predictions
+                </li>
+
+                <li
+                    style="
+                        margin-bottom:15px;
+                    "
+                >
+                    💡 Recommendations
+                </li>
+
+                <!-- PROFILE -->
+
+                <li
+                    style="
+                        margin-top:30px;
+                        margin-bottom:15px;
+                    "
+                >
+                    <a
+                        href="/profile"
+                        style="
+                            color:white;
+                            text-decoration:none;
+                        "
+                    >
+                        👤 Profile
+                    </a>
+                </li>
+
+                <!-- LOGOUT -->
+
+                <li>
+
+                    <a
+                        href="/logout"
+                        style="
+                            color:white;
+                            text-decoration:none;
+                        "
+                    >
+                        🚪 Logout
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!-- MAIN CONTENT -->
+
+        <div class="main-content">
+
+            <h1>AI Life Delay Optimizer</h1>
+
+            <p
+                style="
+                    color:#94a3b8;
+                    margin-bottom:20px;
+                "
+            >
+                Your Daily Productivity Assistant
+            </p>
+
+            <!-- PLAN -->
+
+            <div class="card">
+
+                <h2>Plan Your Day</h2>
+
+                <input
+                    id="taskName"
+                    placeholder="Task name (e.g. Gym)"
+                >
+
+                <input
+                    id="taskTime"
+                    placeholder="Time (e.g. 07:00)"
+                >
+
+                <input
+                    id="taskType"
+                    placeholder="Type (e.g. Exercise)"
+                >
+
+                <input
+                    id="taskLocation"
+                    placeholder="Location (e.g. Home, Office, Gym)"
+                >
+
+                <button onclick="addTask()">
+                    Plan Task
+                </button>
+
+            </div>
+
+            <!-- TODAY'S SCHEDULE -->
+
+            <div class="card">
+
+                <h2>Today's Schedule</h2>
+
+                <ul id="scheduleList"></ul>
+
+            </div>
+
+            <!-- STATS -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <h3>Total Tasks</h3>
+                    <p id="totalTasks">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Completed Tasks</h3>
+                    <p id="completedTasks">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Delayed Tasks</h3>
+                    <p id="delayedTasks">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Productivity Score</h3>
+                    <p id="score">0</p>
+                </div>
+
+            </div>
+
+            <!-- DASHBOARD -->
+
+            <div class="dashboard">
+
+                <div class="card">
+                    <h2>AI Insights</h2>
+                    <ul id="insights"></ul>
+                </div>
+
+                <div class="card">
+                    <h2>AI Recommendations</h2>
+                    <ul id="recommendations"></ul>
+                </div>
+
+                <div class="card">
+                    <h2>Travel Intelligence</h2>
+                    <p id="travel"></p>
+                </div>
+
+                <div class="card">
+                    <h2>Smart Scheduler</h2>
+                    <p id="schedule"></p>
+                </div>
+
+                <div class="card">
+                    <h2>Delay Analytics</h2>
+                    <canvas id="delayChart"></canvas>
+                </div>
+
+                <div class="card">
+                    <h2>Weekly Performance</h2>
+                    <canvas id="trendChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<!-- EDIT TASK MODAL -->
+
+<div
+    id="editModal"
+    style="
+        display:none;
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.7);
+        justify-content:center;
+        align-items:center;
+        z-index:1000;
+    "
+>
+
+    <div
+        class="card"
+        style="
+            width:450px;
+            max-width:90%;
+        "
+    >
+
+        <h2
+            style="
+                text-align:center;
+                color:#38bdf8;
+                margin-bottom:25px;
+            "
+        >
+            ✏️ Edit Task
+        </h2>
+
+        <input
+            id="editName"
+            placeholder="Task Name"
+        >
+
+        <input
+            id="editTime"
+            placeholder="HH:MM"
+        >
+
+        <input
+            id="editType"
+            placeholder="Task Type"
+        >
+
+        <input
+            id="editLocation"
+            placeholder="Location"
+        >
+
+        <div class="modal-buttons">
+
+            <button
+                type="button"
+                onclick="saveEditTask()"
+            >
+                💾 Save
+            </button>
+
+            <button
+                type="button"
+                onclick="closeEditModal()"
+            >
+                ❌ Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
